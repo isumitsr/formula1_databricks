@@ -122,12 +122,7 @@ circuits_renamed_df = circuits_selected_df.withColumnRenamed("circuitId","circui
 
 # COMMAND ----------
 
-#from pyspark.sql.functions import current_timestamp, lit
-
-# COMMAND ----------
-
 circuits_final_df = add_ingestion_date(circuits_renamed_df)
-  #  .withColumn("env", lit("Production"))
 
 # COMMAND ----------
 
@@ -140,17 +135,12 @@ circuits_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/circ
 
 # COMMAND ----------
 
-# %fs
-# ls /mnt/formula1dlsc/processed/circuits
-
-# COMMAND ----------
-
 df = spark.read.parquet(f"{processed_folder_path}/circuits")
 display(df)
 
 # COMMAND ----------
 
-dbutils.notebook.exit("Successful")
+dbutils.notebook.exit("Parquet file created and ingested Succesfully")
 
 # COMMAND ----------
 
