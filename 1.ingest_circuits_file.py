@@ -23,6 +23,11 @@ v_data_source = dbutils.widgets.get("p_data_source")
 
 # COMMAND ----------
 
+dbutils.widgets.text("p_file_date","2021-03-21")
+v_file_date = dbutils.widgets.get("p_file_date")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -53,30 +58,12 @@ circuits_schema = StructType(fields = [StructField("circuitId", IntegerType(), F
 circuits_df = spark.read \
 .option("header", True) \
 .schema(circuits_schema) \
-.csv(f"{raw_folder_path}/circuits.csv")
+.csv(f"{raw_folder_path}/{v_file_date}/circuits.csv")
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ## selecting only required columns
-
-# COMMAND ----------
-
-# # 1st way
-# circuits_selected_df = circuits_df.select("circuitId", "circuitRef", "name", "location", "country", "lat","lng","alt")
-
-# COMMAND ----------
-
-# 2nd Way
-# circuits_selected_df = circuits_df.select(circuits_df.circuitId, circuits_df.circuitRef, circuits_df.name, circuits_df.location, circuits_df.country, circuits_df.lat,circuits_df.lng,circuits_df.alt)
-
-# COMMAND ----------
-
-# # 3rd Way
-# circuits_selected_df = circuits_df.select(
-#     circuits_df["circuitId"], circuits_df["circuitRef"], circuits_df["name"], circuits_df["location"], 
-#     circuits_df["country"], circuits_df["lat"],circuits_df["lng"],circuits_df["alt"]
-# )
 
 # COMMAND ----------
 
@@ -87,15 +74,6 @@ from pyspark.sql.functions import col
 circuits_selected_df = circuits_df.select(
     col("circuitId"), col("circuitRef"), col("name"), col("location"), col("country"), col("lat"),col("lng"),col("alt")
 )
-
-# COMMAND ----------
-
-# 4th Way
-#from pyspark.sql.functions import col
-# circuits_selected_df = circuits_df.select(
-#     col("circuitId"), col("circuitRef"), col("name"), col("location"), col("country"), col("lat").alias("Latitude"),col("lng"),col("alt")
-# )
-
 
 # COMMAND ----------
 
@@ -113,7 +91,8 @@ circuits_renamed_df = circuits_selected_df.withColumnRenamed("circuitId","circui
     .withColumnRenamed("lat", "latitude") \
     .withColumnRenamed("lng", "longitude") \
     .withColumnRenamed("alt", "altitude") \
-    .withColumn("data_source", lit(v_data_source))
+    .withColumn("data_source", lit(v_data_source)) \
+    .withColumn("file_date", lit(v_file_date)) 
 
 # COMMAND ----------
 
@@ -123,6 +102,7 @@ circuits_renamed_df = circuits_selected_df.withColumnRenamed("circuitId","circui
 # COMMAND ----------
 
 circuits_final_df = add_ingestion_date(circuits_renamed_df)
+  #  .withColumn("env", lit("Production"))
 
 # COMMAND ----------
 
@@ -131,17 +111,18 @@ circuits_final_df = add_ingestion_date(circuits_renamed_df)
 
 # COMMAND ----------
 
-circuits_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/circuits")
+circuits_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.circuits")
 
 # COMMAND ----------
 
-df = spark.read.parquet(f"{processed_folder_path}/circuits")
-display(df)
+# %fs
+# ls /mnt/formula1dlsc/processed/circuits
 
 # COMMAND ----------
 
-dbutils.notebook.exit("Parquet file created and ingested Succesfully")
+dbutils.notebook.exit("Successful")
 
 # COMMAND ----------
 
-
+# MAGIC %sql
+# MAGIC select * from f1_processed.circuits
