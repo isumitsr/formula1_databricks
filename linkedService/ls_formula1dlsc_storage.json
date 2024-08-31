@@ -1,0 +1,12 @@
+{
+	"name": "ls_formula1dlsc_storage",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://formula1dlsc.dfs.core.windows.net/",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEZFQkExRjY2LUU4NjQtNDU2Mi04NDhBLUE2OUI2MEQxQzQ5M183NDJlZTMxZS05YmI0LTQ0OTctODM5My1lNjkzZmNiYzc2ZWYiDQp9"
+		}
+	}
+}
