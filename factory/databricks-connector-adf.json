@@ -1,0 +1,9 @@
+{
+	"name": "databricks-connector-adf",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "e6f1a2f8-bd1d-4383-8967-7f4969fd5bf6",
+		"tenantId": "b8db716a-21ec-4e33-83fb-461a4374103f"
+	}
+}
